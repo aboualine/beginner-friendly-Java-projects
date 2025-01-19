@@ -10,6 +10,9 @@ public class Student {
     private String name;
     private StudentStatus status;
     private List<Double> grades;
+    public int getId(){
+        return id;
+    }
     public void setName(String name){
         this.name=name;
     }
@@ -48,6 +51,12 @@ public class Student {
                                    .orElse(0.0);
         System.out.println("the average grade is : "+avg);
     }
+    public void highGrade(){
+        double hightG = grades.stream()
+                              .max(Comparator.naturalOrder())
+                              .orElseThrow();
+        System.out.println("the maximum grade is : "+hightG);
+    }
     private List<Student> students;
     public List<Student> studentService() {
         this.students = new ArrayList<>();
@@ -59,16 +68,41 @@ public class Student {
     public void SearchingForStudents(){
         try (Scanner write = new Scanner(System.in)) {
             System.out.print("you can search by NAME or ID ,what do you prefere (Name/Id) : ");
-            write.nextLine();
-            String name = students.stream().filter(n -> n.equals(write.nextLine())).toString();
-            int id = students.stream().mapToInt(n -> n.equals(write.nextLine()));
-            if (!write.nextLine().isEmpty() && (write.nextLine().equalsIgnoreCase(name) || Integer.valueOf(write.nextLine()) == id)) {
-                toString();
-                calculateAverageGrade();
+            String response = write.nextLine();
+            if (response.equalsIgnoreCase("name")) {
+                System.out.print("Enter the name : ");
+                name = write.nextLine();
+                students.stream()
+                        .filter(n -> n.getName().equalsIgnoreCase(name))
+                        .forEach(s -> {
+                            System.out.println(s.toString());
+                            s.calculateAverageGrade();
+                        });
+            }
+            else if (response.equalsIgnoreCase("id")) {
+                System.out.print("Enter the id : ");
+                int id = Integer.parseInt(write.nextLine());
+                students.stream()
+                        .filter(n -> n.getId() == id)
+                        .forEach(s -> {
+                            System.out.println(s.toString());
+                            s.calculateAverageGrade();
+                            s.highGrade();
+                        });
+            }
+            else {
+            System.out.println("Invalid choice. Please select 'Name' or 'Id'.");
             }
         } catch (Exception e) {
             System.out.println("Exception founded : "+e.getMessage());
         }
+    }
+    public void sortStudents(){
+        students.stream()
+                .sorted((s1, s2) -> Double.compare(s1.calculateAverageGrade(), s2.calculateAverageGrade()))
+                .forEach(n -> {n.getName();
+                               n.calculateAverageGrade();
+                });
     }
     
 }
