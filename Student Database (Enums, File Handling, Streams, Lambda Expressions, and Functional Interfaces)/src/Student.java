@@ -1,108 +1,101 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 public class Student {
     private static int idCounter = 0;
     private int id;
     private String name;
     private StudentStatus status;
     private List<Double> grades;
-    public int getId(){
+    private List<Student> students;
+    public Student(String name, StudentStatus status, List<Double> grades) {
+        idCounter++;
+        this.id = idCounter;
+        this.name = !name.isEmpty() ? name : "Unknown";
+        this.grades = grades != null && grades.stream().allMatch(n -> n >= 0 && n <= 100) ? grades : new ArrayList<>();
+        this.status = status != null ? status : StudentStatus.ENROLLED;
+    }
+    public int getId() {
         return id;
     }
-    public void setName(String name){
-        this.name=name;
-    }
-    public String getName(){
+    public String getName() {
         return name;
     }
-    public void setStatus(StudentStatus status){
-        this.status=status;
+    public void setName(String name) {
+        if (!name.isEmpty()) {
+            this.name = name;
+        }
     }
-    public StudentStatus getStatus(){
+    public StudentStatus getStatus() {
         return status;
     }
-    public Student(int id , String name , StudentStatus status ,List<Double> grades){
-        idCounter++;
-        this.id=idCounter;
-        if (!name.isEmpty()) {
-            this.name=name;
-        }
-        if (grades.stream().allMatch(n -> n != 0 && n >= 0 && n <100)) {
-            this.grades=grades;
-        } else {
-            System.out.println("the values are not valid!");
-        }
+    public void setStatus(StudentStatus status) {
         if (status != null) {
-            this.status=status;
+            this.status = status;
+        }
+    }
+    public List<Double> getGrades() {
+        return grades;
+    }
+    public void setGrades(List<Double> grades) {
+        if (grades != null && grades.stream().allMatch(n -> n >= 0 && n <= 100)) {
+            this.grades = grades;
         }
     }
     @Override
-    public String toString(){
-        return "Student id : "+id+"\nStudent name : "+name+"\nStudent grades : "+grades+"\nStudent statu : "+status;
+    public String toString() {
+        return "Student ID: " + id + "\nName: " + name + "\nStatus: " + status + "\nGrades: " + grades;
     }
-    public void calculateAverageGrade(){
-        double avg = grades.stream()
-                                   .mapToDouble(Double::doubleValue)
-                                   .average()
-                                   .orElse(0.0);
-        System.out.println("the average grade is : "+avg);
+    public double calculateAverageGrade() {
+        return grades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
-    public void highGrade(){
-        double hightG = grades.stream()
-                              .max(Comparator.naturalOrder())
-                              .orElseThrow();
-        System.out.println("the maximum grade is : "+hightG);
+    public double getHighestGrade() {
+        return grades.stream().max(Comparator.naturalOrder()).orElse(0.0);
     }
-    private List<Student> students;
     public List<Student> studentService() {
-        this.students = new ArrayList<>();
+        if (students == null) {
+            students = new ArrayList<>();
+        }
         return students;
     }
     public void addStudent(Student student) {
-        students.add(student);
+        studentService().add(student);
     }
-    public void SearchingForStudents(){
-        try (Scanner write = new Scanner(System.in)) {
-            System.out.print("you can search by NAME or ID ,what do you prefere (Name/Id) : ");
-            String response = write.nextLine();
-            if (response.equalsIgnoreCase("name")) {
-                System.out.print("Enter the name : ");
-                name = write.nextLine();
-                students.stream()
-                        .filter(n -> n.getName().equalsIgnoreCase(name))
-                        .forEach(s -> {
-                            System.out.println(s.toString());
-                            s.calculateAverageGrade();
-                        });
-            }
-            else if (response.equalsIgnoreCase("id")) {
-                System.out.print("Enter the id : ");
-                int id = Integer.parseInt(write.nextLine());
-                students.stream()
-                        .filter(n -> n.getId() == id)
-                        .forEach(s -> {
-                            System.out.println(s.toString());
-                            s.calculateAverageGrade();
-                            s.highGrade();
-                        });
-            }
-            else {
-            System.out.println("Invalid choice. Please select 'Name' or 'Id'.");
-            }
-        } catch (Exception e) {
-            System.out.println("Exception founded : "+e.getMessage());
-        }
-    }
-    public void sortStudents(){
-        students.stream()
-                .sorted((s1, s2) -> Double.compare(s1.calculateAverageGrade(), s2.calculateAverageGrade()))
-                .forEach(n -> {n.getName();
-                               n.calculateAverageGrade();
+    public void searchForStudents() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Search by NAME or ID (Name/Id): ");
+        String choice = scanner.nextLine();
+        if (choice.equalsIgnoreCase("name")) {
+            System.out.print("Enter the name: ");
+            String searchName = scanner.nextLine();
+            studentService().stream()
+                .filter(student -> student.getName().equalsIgnoreCase(searchName))
+                .forEach(student -> {
+                    System.out.println(student);
+                    System.out.println("Average Grade: " + student.calculateAverageGrade());
                 });
+        } else if (choice.equalsIgnoreCase("id")) {
+            System.out.print("Enter the ID: ");
+            int searchId = scanner.nextInt();
+            studentService().stream()
+                .filter(student -> student.getId() == searchId)
+                .forEach(student -> {
+                    System.out.println(student);
+                    System.out.println("Average Grade: " + student.calculateAverageGrade());
+                    System.out.println("Highest Grade: " + student.getHighestGrade());
+                });
+        } else {
+            System.out.println("Invalid choice. Please select 'Name' or 'Id'.");
+        }
+        scanner.close();
     }
-    
+    public void sortStudents() {
+        studentService().stream()
+            .sorted(Comparator.comparingDouble(Student::calculateAverageGrade).reversed())
+            .forEach(student -> {
+                System.out.println("Name: " + student.getName());
+                System.out.println("Average Grade: " + student.calculateAverageGrade());
+            });
+    }
 }
