@@ -7,7 +7,6 @@ public class Main {
         List<Student> studentList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         String fileName = "data/students.dat";
-
         while (true) {
             System.out.println("\n--- Student Management System ---");
             System.out.println("1. Add Student");
@@ -20,7 +19,6 @@ public class Main {
             System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-
             switch (choice) {
                 case 1 -> {
                     System.out.print("Enter student name: ");
@@ -29,7 +27,7 @@ public class Main {
                     String statusStr = scanner.next();
                     StudentStatus status = StudentStatus.valueOf(statusStr.toUpperCase());
                     System.out.print("Enter grades (comma-separated): ");
-                    scanner.nextLine(); // Consume leftover newline
+                    scanner.nextLine(); 
                     String gradesInput = scanner.nextLine();
                     List<Double> grades = Arrays.stream(gradesInput.split(","))
                                                 .map(Double::parseDouble)
@@ -50,7 +48,7 @@ public class Main {
                 }
                 case 3 -> {
                     System.out.print("Search by NAME or ID (Name/Id): ");
-                    scanner.nextLine(); // Consume leftover newline
+                    scanner.nextLine();
                     String choiceSearch = scanner.nextLine();
                     if (choiceSearch.equalsIgnoreCase("name")) {
                         System.out.print("Enter name: ");
@@ -70,7 +68,7 @@ public class Main {
                 }
                 case 4 -> {
                     System.out.print("Filter by ACTIVE or HIGH_GRADES (Active/High): ");
-                    scanner.nextLine(); // Consume leftover newline
+                    scanner.nextLine();
                     String filterChoice = scanner.nextLine();
                     StudentFilter filter;
                     if (filterChoice.equalsIgnoreCase("active")) {
