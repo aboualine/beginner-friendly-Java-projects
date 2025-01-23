@@ -1,12 +1,16 @@
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws ClassNotFoundException, IOException {
+    public static void main(String[] args) {
         List<Student> studentList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
-        String fileName = "data/students.dat";
+        String fileName = "../data/students.dat";
+
         while (true) {
             System.out.println("\n--- Student Management System ---");
             System.out.println("1. Add Student");
@@ -18,23 +22,36 @@ public class Main {
             System.out.println("7. Load Students");
             System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
+
+            // Ensure we handle invalid inputs gracefully
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid choice. Please enter a number between 1 and 8.");
+                scanner.next(); // Clear invalid input
+                continue;
+            }
+
             int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
             switch (choice) {
                 case 1 -> {
                     System.out.print("Enter student name: ");
-                    String name = scanner.next();
+                    String name = scanner.nextLine();
                     System.out.print("Enter student status (ENROLLED, GRADUATED, DROPPED_OUT): ");
-                    String statusStr = scanner.next();
-                    StudentStatus status = StudentStatus.valueOf(statusStr.toUpperCase());
-                    System.out.print("Enter grades (comma-separated): ");
-                    scanner.nextLine(); 
-                    String gradesInput = scanner.nextLine();
-                    List<Double> grades = Arrays.stream(gradesInput.split(","))
-                                                .map(Double::parseDouble)
-                                                .collect(Collectors.toList());
-                    Student student = new Student(name, status, grades);
-                    studentList.add(student);
-                    System.out.println("Student added successfully!");
+                    String statusStr = scanner.nextLine();
+                    try {
+                        StudentStatus status = StudentStatus.valueOf(statusStr.toUpperCase());
+                        System.out.print("Enter grades (comma-separated): ");
+                        String gradesInput = scanner.nextLine();
+                        List<Double> grades = Arrays.stream(gradesInput.split(","))
+                                                    .map(Double::parseDouble)
+                                                    .toList();
+                        Student student = new Student(name, status, grades);
+                        studentList.add(student);
+                        System.out.println("Student added successfully!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Invalid status or grades format. Please try again.");
+                    }
                 }
                 case 2 -> {
                     System.out.print("Enter student ID to remove: ");
@@ -48,7 +65,6 @@ public class Main {
                 }
                 case 3 -> {
                     System.out.print("Search by NAME or ID (Name/Id): ");
-                    scanner.nextLine();
                     String choiceSearch = scanner.nextLine();
                     if (choiceSearch.equalsIgnoreCase("name")) {
                         System.out.print("Enter name: ");
@@ -68,7 +84,6 @@ public class Main {
                 }
                 case 4 -> {
                     System.out.print("Filter by ACTIVE or HIGH_GRADES (Active/High): ");
-                    scanner.nextLine();
                     String filterChoice = scanner.nextLine();
                     StudentFilter filter;
                     if (filterChoice.equalsIgnoreCase("active")) {
@@ -92,20 +107,28 @@ public class Main {
                                });
                 }
                 case 6 -> {
-                    FileHandler.saveToFile(fileName, studentList);
-                    System.out.println("Students saved successfully!");
+                    try {
+                        FileHandler.saveToFile(fileName, studentList);
+                    } catch (Exception e) {
+                        System.err.println("Error saving students: " + e.getMessage());
+                    }
                 }
                 case 7 -> {
-                    studentList = FileHandler.loadFromFile(fileName);
-                    System.out.println("Students loaded successfully!");
+                    try {
+                        List<Student> loadedStudents = FileHandler.loadFromFile(fileName);
+                        if (loadedStudents != null) {
+                            studentList = loadedStudents;
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error loading students: " + e.getMessage());
+                    }
                 }
                 case 8 -> {
                     System.out.println("Exiting...");
-                    return;
+                    return; // End program
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
-            scanner.close();
         }
     }
 }
