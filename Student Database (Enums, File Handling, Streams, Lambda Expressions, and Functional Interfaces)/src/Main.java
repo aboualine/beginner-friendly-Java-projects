@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         List<Student> studentList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         String fileName = "../data/students.dat";
@@ -22,17 +22,13 @@ public class Main {
             System.out.println("7. Load Students");
             System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
-
-            // Ensure we handle invalid inputs gracefully
             if (!scanner.hasNextInt()) {
                 System.out.println("Invalid choice. Please enter a number between 1 and 8.");
-                scanner.next(); // Clear invalid input
+                scanner.next();
                 continue;
             }
-
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
-
+            scanner.nextLine();
             switch (choice) {
                 case 1 -> {
                     System.out.print("Enter student name: ");
@@ -125,7 +121,7 @@ public class Main {
                 }
                 case 8 -> {
                     System.out.println("Exiting...");
-                    return; // End program
+                    return;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
