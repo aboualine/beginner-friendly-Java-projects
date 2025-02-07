@@ -1,3 +1,7 @@
 public class Product {
-    //Products logic
+    private String name;
+    private double price;
+    private int quantity;
+    private String category;
+    
 }
