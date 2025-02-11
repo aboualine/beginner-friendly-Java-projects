@@ -1,3 +1,3 @@
 public interface DiscountLogic {
-    //Discount logic    
+    double applyDiscount(double total);    
 }
