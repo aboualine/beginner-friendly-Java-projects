@@ -4,6 +4,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hi! and welcome to my online shoping system :)");
         Scanner write = new Scanner(System.in);
+        ShoppingCart shope = new ShoppingCart();
         while (true) {
             System.out.println("-----Online Shoping System-----");
             System.out.println("1- Display Products.");
@@ -19,7 +20,14 @@ public class Main {
                 write.next();
                 continue;
             }
-            
+            int choice = write.nextInt();
+            switch (choice) {
+                case 1 -> shope.displayProducts();
+                case 2 -> shope.addProduct();
+                case 3 -> shope.removeProduct();
+                default:
+                    break;
+            }
         }
     }
 }
