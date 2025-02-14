@@ -33,8 +33,9 @@ public class ShoppingCart {
         }
         else{
             products.remove(products.stream()
-                    .filter(n -> n.getName().equals(name))
-                    .findFirst());
+                                            .filter(n -> n.getName().equals(name))
+                                            .findFirst()
+                            );
         }
     }
     public void printCart() {

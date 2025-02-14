@@ -14,7 +14,7 @@ public class XOfinalGAME {
     public void playGame(){
         board = new String[3][3];
         Scanner write = new Scanner(System.in);
-        System.out.print("couse the symbole you want to play with between X & O : ");
+        System.out.print("chouse the symbole you want to play with between X & O : ");
         playerSymbole = write.nextLine().toUpperCase();
         computerSymbole = playerSymbole.equals("X") ? "O" : "X";
         System.out.println("GREAT! you choused \" "+playerSymbole+" \" ,so the computer will play as \" "+computerSymbole+" \".");
@@ -38,7 +38,6 @@ public class XOfinalGAME {
                 while (caseFull) {
                     if (board[linechoice][columnchoice] == null) {
                         board[linechoice][columnchoice] = playerSymbole;
-                        // caseFull = false;
                         break;
                     } else {
                         System.out.print("this case is already full ,chouse an other one : ");
@@ -48,7 +47,6 @@ public class XOfinalGAME {
                         columnchoice = write.nextInt()-1;
                     }
                 }
-                // Thread.sleep(1000);
                 Random computerRound = new Random();
                 int randomline = computerRound.nextInt(3);
                 int randomcolumn = computerRound.nextInt(3);
@@ -64,7 +62,6 @@ public class XOfinalGAME {
                     }
                 }
                 System.out.println("still "+freeCases+" cases to play !");
-                // Thread.sleep(2000);
                 for(String[] game : board){
                     System.out.println(Arrays.toString(game).replace("null", "    "));
                 }
@@ -78,7 +75,6 @@ public class XOfinalGAME {
                         ((board[0][0] != null && board[0][0].equals(playerSymbole)) &&
                         (board[1][1] != null && board[1][1].equals(playerSymbole)) &&
                         (board[2][2] != null && board[2][2].equals(playerSymbole)))) {
-                        // Thread.sleep(1000);
                         System.out.print("CONGRATULATIONS! you won the game .want to play again ?");
                         stillGame = askReplay(write);
                         break; 
@@ -92,13 +88,11 @@ public class XOfinalGAME {
                             ((board[0][0] != null && board[0][0].equals(computerSymbole)) &&
                             (board[1][1] != null && board[1][1].equals(computerSymbole)) &&
                             (board[2][2] != null && board[2][2].equals(computerSymbole)))){
-                        // Thread.sleep(1000);
                         System.out.print("OUPS! you lost the game .want to play again ?");
                         stillGame = askReplay(write);
                         break;
                     }
                     else if (freeCases == 0){
-                        // Thread.sleep(1000);
                         System.out.print("it's a DRAW .want to play again ?");
                         stillGame = askReplay(write);
                         break;

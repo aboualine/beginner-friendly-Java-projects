@@ -14,7 +14,7 @@ public class Main {
             System.out.println("5- Display Products.");
             System.out.println("6- Choose Payments.");
             System.out.println("7- Checkout.");
-            System.out.print("Enter your choice");
+            System.out.print("Enter your choice : ");
             if(!write.hasNext()){
                 System.out.println("enter a number between 1 and 7 !");
                 write.next();
@@ -25,8 +25,17 @@ public class Main {
                 case 1 -> shope.displayProducts();
                 case 2 -> shope.addProduct();
                 case 3 -> shope.removeProduct();
-                default:
-                    break;
+                case 4 -> System.out.println();
+                case 5 -> System.out.println();
+                case 6 -> System.out.println();
+                case 7 -> { 
+                            shope.printCart();
+                            shope.calculateTotal();
+                            System.out.println("Exiting Online Shoping System. Goodbye!");
+                            write.close();
+                            return;
+                          }
+                default -> System.out.println("You need to chouse a number between (1 and 7) !");
             }
         }
     }
