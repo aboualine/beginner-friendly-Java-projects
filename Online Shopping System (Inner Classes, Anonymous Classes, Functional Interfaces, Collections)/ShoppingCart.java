@@ -1,19 +1,34 @@
 import java.util.List;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 public class ShoppingCart {
     private List<Product> products = new ArrayList<>();
     Scanner write = new Scanner(System.in);
-    public void addProduct() {
+    File file = new File("products.txt");
+    public void addProduct() throws IOException {
         System.out.print("Enter the product's name : ");
         String name = write.nextLine();
         System.out.print("Enter the product's price : ");
         double price = write.nextDouble();
         System.out.print("Enter the product's quantity : ");
         int quantity = write.nextInt();
+        write.nextLine();
         System.out.print("Enter the product's category : ");
         String category = write.nextLine();
-        products.add(new Product(name, price, quantity, category));
+        Product product = new Product(name, price, quantity, category);
+        products.add(product);
+        if (!file.exists()) {
+            file.createNewFile();
+            System.out.println("the file \"products.txt\" created succesfuly!");
+        }
+        try (PrintWriter fileWriter = new PrintWriter(new FileWriter(file,true))) {
+            fileWriter.println(name + "," + price + "," + quantity + "," + category);
+        }
+        System.out.println("Product added successfully!");
     }
     public void displayProducts(){
         if(products.isEmpty()){
@@ -22,6 +37,23 @@ public class ShoppingCart {
         else{
             products.forEach(System.out::println);
         }
+    }
+    public void loadProductsFromFile() throws IOException {
+        if (!file.exists()) return;
+        Scanner fileReader = new Scanner(file);
+        while (fileReader.hasNextLine()) {
+            String line = fileReader.nextLine();
+            String[] parts = line.split(",");
+            if (parts.length == 4) {
+                String name = parts[0];
+                double price = Double.parseDouble(parts[1]);
+                int quantity = Integer.parseInt(parts[2]);
+                String category = parts[3];
+                products.add(new Product(name, price, quantity, category));
+            }
+        }
+        fileReader.close();
+        System.out.println("Products loaded from file.");
     }
     @SuppressWarnings("unlikely-arg-type")
     public void removeProduct() {
